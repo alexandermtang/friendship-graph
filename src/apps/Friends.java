@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import structures.Graph;
+import structures.Vertex;
 
 public class Friends {
 
@@ -29,22 +30,44 @@ public class Friends {
 		return response;
 	}
 	
-	public static void main(String[] args) 
-	throws IOException { 
+	static Graph build(String graphFile) 
+	throws IOException {
+		Scanner sc = new Scanner(new File(graphFile));
+		int numVerts = sc.nextInt();
+		Graph g = new Graph(numVerts);
+		
+		sc.useDelimiter("\n");
+
+		// read vertices
+		for(int v = 0; v < numVerts; v++) {	
+			String[] line = sc.next().split("\\|");
+			String name = line[0];
+			g.addVertex(new Vertex(name, (line[1].equals("y") ? line[2] : "")));
+		}
+
+		// read edges
+		while(sc.hasNext()) {
+			String[] line = sc.next().split("\\|");
+			g.addEdge(g.indexOfName(line[0]),g.indexOfName(line[1]));
+		}
+		
+		return g;
+	}
+	
+	public static void main(String[] args)
+	throws IOException {
 		System.out.print("Enter Friendship Graph file name => ");
 		String graphFile = stdin.next();
-		Graph graph = new Graph(new Scanner(new File(graphFile)));
+		Graph graph = build(graphFile);
 		System.out.println(graph);
+		graph.printSchools();
 		char option;
 		while((option = getOption()) != 'q') {
 			switch (option) {
 				case 's':
 					System.out.print("\t\tWhich school? => ");
 					String school = stdin.next().toLowerCase();
-			//		ArrayList<Graph> subgraphs = graph.subgraph(school);
-			//		for(int i=0;i < subgraphs.size(); i++) {
-			//			System.out.println(subgraphs.get(i));
-			//		}
+					System.out.println(graph.subgraph(school));
 					break;
 				case 'i':
 					System.out.print("\t\tWho wants the intro? => ");
@@ -56,7 +79,7 @@ public class Friends {
 				case 'c':
 					ArrayList<Graph> cliques = graph.cliques();
 					for(int i=0; i < cliques.size(); i++) {
-						System.out.print("Clique " + i+1);
+						System.out.println("Clique " + (i+1));
 						System.out.println(cliques.get(i));
 					}
 					break;

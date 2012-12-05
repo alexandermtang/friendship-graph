@@ -1,12 +1,21 @@
 package structures;
 
+import java.util.LinkedList;
+
 public class Vertex {
 	public String name;
 	public String school;
-	public Neighbor neighbors;
-	public Vertex(String name, String school, Neighbor neighbors) {
+	public LinkedList<Integer> neighbors;
+	public Vertex(String name, String school) {
 		this.name = name;
 		this.school = school;
-		this.neighbors = neighbors;
+		neighbors = new LinkedList<Integer>();
+	}
+	
+	public boolean equals(Vertex other) {
+		if((other != null) && (other instanceof Vertex)) {
+			return (name.equals(other.name) && school.equals(other.school));
+		}
+		return false;
 	}
 }
