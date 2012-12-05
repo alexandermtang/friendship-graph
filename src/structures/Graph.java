@@ -71,7 +71,7 @@ public class Graph {
 		/* FINISH THIS SHIT NIGGAAAAAAAAAAAAAAAAAA */
 		visited[0] = true;
 		if(adjlists[0].school.equals(school)) {
-			subadjlists[0] = new Vertex(adjlists[0].name, adjlists[0].school, null);
+	//		subadjlists[0] = new Vertex(adjlists[0].name, adjlists[0].school, null);
 		}
 		q.add(0);
 		while(q.size() != 0) {
@@ -83,7 +83,48 @@ public class Graph {
 	
 	public String shortestPath(String name1, String name2) {
 		
+		Queue<Integer> q = new LinkedList<Integer>();
+		boolean[] visited = new boolean[adjlists.length];
+		Arrays.fill(visited, false);
+		HashMap<Integer,Integer> previous = new HashMap<Integer,Integer>();
+		
+		int start = indexOfName(name1);
+		int finish = indexOfName(name2);
+		int curr = start;
+		
+		previous.put(curr,curr);
+		q.add(curr);
+		visited[curr] = true;
+		
+		while(!q.isEmpty()) {
+			curr = (int)q.remove(); 
+			if(curr == finish) {
+				break;
+			} else {
+				for(Neighbor ptr = adjlists[curr].neighbors; ptr != null; ptr = ptr.next) {
+					if(!visited[ptr.vnum]) {
+						q.add(ptr.vnum);
+						visited[ptr.vnum] = true;
+						previous.put(ptr.vnum,curr);
+					}
+				}
+			}
+		}
+		
+		if(curr != finish) return "\t\t\tLooks like "+name1+" is out of luck! :(";
+		
+		ArrayList<String> reversepath = new ArrayList<String>();
+		reversepath.add(adjlists[finish].name);
+		for(int i=finish; i != start; i=previous.get(i)) { 
+			reversepath.add(adjlists[previous.get(i)].name); 
+		}
+		
 		StringBuilder sb = new StringBuilder();
+		sb.append("\t\t\tTry this route! \n\t\t\t");
+		for(int i=reversepath.size()-1; i >= 0; i--) {
+			sb.append(reversepath.get(i));
+			if(i != 0) sb.append(" --> ");
+		}
 		return sb.toString();
 	}
 	

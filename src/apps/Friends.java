@@ -52,8 +52,6 @@ public class Friends {
 					System.out.print("\t\tWho does "+ name1 + " want to meet? ;) => ");
 					String name2 = stdin.next().toLowerCase();
 					System.out.println(graph.shortestPath(name1, name2));
-					//ShortestPaths path = new ShortestPaths(graph, name1, name2);
-				
 					break;
 				case 'c':
 					break;
