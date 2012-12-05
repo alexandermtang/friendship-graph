@@ -41,10 +41,10 @@ public class Friends {
 				case 's':
 					System.out.print("\t\tWhich school? => ");
 					String school = stdin.next().toLowerCase();
-					ArrayList<Graph> subgraphs = graph.subgraph(school);
-					for(int i=0;i < subgraphs.size(); i++) {
-						System.out.println(subgraphs.get(i));
-					}
+			//		ArrayList<Graph> subgraphs = graph.subgraph(school);
+			//		for(int i=0;i < subgraphs.size(); i++) {
+			//			System.out.println(subgraphs.get(i));
+			//		}
 					break;
 				case 'i':
 					System.out.print("\t\tWho wants the intro? => ");
@@ -54,6 +54,11 @@ public class Friends {
 					System.out.println(graph.shortestPath(name1, name2));
 					break;
 				case 'c':
+					ArrayList<Graph> cliques = graph.cliques();
+					for(int i=0; i < cliques.size(); i++) {
+						System.out.print("Clique " + i+1);
+						System.out.println(cliques.get(i));
+					}
 					break;
 				case 'o':
 					break;

@@ -7,6 +7,8 @@ public class Graph {
 	Vertex[] adjlists;
 	Scanner sc;
 	
+	public Graph() { }
+	
 	public Graph(Scanner sc) { 
 		this.sc = sc; 
 		build();
@@ -15,8 +17,8 @@ public class Graph {
 	// nameHash used to translate from person's name to vertex number
 	HashMap<String,Integer> nameHash;
 	
-	// schoolSize used to determine # of students at each school
-	HashMap<String,Integer> schoolSize = new HashMap<String,Integer>();
+	// key is name of school, value is linkedlist of all students in that school
+	HashMap<String,LinkedList<Integer>> studentsInSchool = new HashMap<String,LinkedList<Integer>>();
 	
 	// Initialize graph with input from file, builds adjacencyLL
 	void build() {
@@ -34,9 +36,14 @@ public class Graph {
 			if(line[1].equals("y")) {
 				String school = line[2];
 				adjlists[v] = new Vertex(name, school, null);
-				
-				// stores <school,# of students> in schoolSize
-				schoolSize.put(school, schoolSize.containsKey(school) ? schoolSize.get(school) + 1 : 1); 
+
+				if(!studentsInSchool.containsKey(school)) {
+					LinkedList<Integer> students = new LinkedList<Integer>();
+					students.add(v);
+					studentsInSchool.put(school, students);
+				} else {
+					studentsInSchool.get(school).add(v);
+				}
 			} else {
 				adjlists[v] = new Vertex(name, "", null);
 			}
@@ -52,21 +59,28 @@ public class Graph {
 			adjlists[v1].neighbors = new Neighbor(v2, adjlists[v1].neighbors);
 			adjlists[v2].neighbors = new Neighbor(v1, adjlists[v2].neighbors);
 		}
+		
+		
+		// used to iterate through studentsInSchool
+	/*	Iterator it = studentsInSchool.entrySet().iterator();
+		while(it.hasNext()) {
+			Map.Entry pairs = (Map.Entry)it.next();
+			System.out.println(pairs.getKey() + " = " + pairs.getValue());
+			it.remove();
+		}*/
 	}	
 	
 	// returns vnum of name using nameHash, -1 if not present
 	public int indexOfName(String name) { return nameHash.containsKey(name) ? nameHash.get(name) : -1; }
 	
 	// Uses BFS to print out an adjlists of subgraph of students in school
-	public ArrayList<Graph> subgraph(String school) {
-		// if(!schoolSize.containsKey(school)) return; // returns if school not found in schoolSize
-		boolean[] visited = new boolean[adjlists.length];
-		Arrays.fill(visited, false); // sets every entry in visited array as false
-		ArrayList<Graph> subgraphs = new ArrayList<Graph>();
-		
-		ArrayList<Vertex> subadjlists = new ArrayList<Vertex>();
-	//	Vertex[] subadjlists = new Vertex[schoolSize.get(school)];
+	public Graph subgraph(String school) {
 		Queue<Integer> q = new LinkedList<Integer>();
+		boolean[] visited = new boolean[adjlists.length];
+		Arrays.fill(visited, false);
+		Graph g = new Graph();
+	
+		
 		
 		/* FINISH THIS SHIT NIGGAAAAAAAAAAAAAAAAAA */
 		visited[0] = true;
@@ -78,11 +92,26 @@ public class Graph {
 			int w = q.remove();
 		}
 		
-		return subgraphs;
+		return g;
+	}
+	
+	public ArrayList<Graph> cliques() {
+		ArrayList<Graph> cliques = new ArrayList<Graph>();
+		
+		Graph g = new Graph();
+		
+		// used to iterate through studentsInSchool
+		Iterator it = studentsInSchool.entrySet().iterator();
+		while(it.hasNext()) {
+			Map.Entry pairs = (Map.Entry)it.next();
+			cliques.add(subgraph((String)pairs.getKey()));
+			it.remove();
+		}
+		
+		return cliques; 
 	}
 	
 	public String shortestPath(String name1, String name2) {
-		
 		Queue<Integer> q = new LinkedList<Integer>();
 		boolean[] visited = new boolean[adjlists.length];
 		Arrays.fill(visited, false);
@@ -92,7 +121,7 @@ public class Graph {
 		int finish = indexOfName(name2);
 		int curr = start;
 		
-		previous.put(curr,curr);
+		previous.put(curr,start);
 		q.add(curr);
 		visited[curr] = true;
 		
