@@ -107,83 +107,34 @@ public class Graph {
 		}
 		
 		Queue<Integer> q = new LinkedList<Integer>();
-		boolean[] visited = new boolean[schoolList.size()];
+		boolean[] visited = new boolean[adjlists.size()];
 		Arrays.fill(visited, false);
-		for(int i=0; i < schoolList.size(); i++) {
-			for(int nbr : adjlists.get(i).neighbors) {
-				if(adjlists.get(nbr).school.equals(school)) {
-					subgraph.addEdge(i, subgraph.indexOfName(nameOfIndex(nbr)));
-				}
-			}
-		}
 		
-		
-		return subgraph;
-	}
-	
-	/*
-	// Uses BFS to print out an adjlists of subgraph of students in school
-	public Graph subgraph(String school) {
-		Queue<Integer> q = new LinkedList<Integer>();
-		Vertex[] schooladjlists = new Vertex[studentsInSchool.get(school).size()];
-		boolean[] visited = new boolean[schooladjlists.length];
-		Arrays.fill(visited, false);
-
-		HashMap<Integer,Integer> previous = new HashMap<Integer,Integer>();
-		
-		LinkedList<Integer> tovisit = studentsInSchool.get(school);
-		for(int i=0; i < tovisit.size(); i++) {
-			schooladjlists[i] = new Vertex(adjlists[tovisit.get(i)].name, school, null);
-			
-			
-			
-			
-			
-		}
-		int start = studentsInSchool.get(school).get(0);
-		int curr = start;
-		int finish;
-		
-		previous.put(curr,start);
-		q.add(curr);
-		visited[curr] = true;
+		q.add(schoolList.get(0));
+		visited[schoolList.get(0)] = true;
 		
 		while(!q.isEmpty()) {
-			curr = (int)q.remove(); 
-
-			for(Neighbor ptr = adjlists[curr].neighbors; ptr != null; ptr = ptr.next) {
-				if(!visited[ptr.vnum]) {
-					q.add(ptr.vnum);
-					visited[ptr.vnum] = true;
-					previous.put(ptr.vnum,curr);
-				}
+			int curr = (int)q.remove();
+			
+			for(int nbr : adjlists.get(curr).neighbors) {
+				if(!visited[nbr] && adjlists.get(nbr).school.equals(school)) {
+					q.add(nbr);
+					visited[nbr] = true;
+					String currname = nameOfIndex(curr);
+					String nbrname = nameOfIndex(nbr);
+					subgraph.addEdge(subgraph.indexOfName(currname),subgraph.indexOfName(nbrname));
+				} 
 			}
-			finish = curr;
+			
+			visited[curr] = true;
+			
+			if(q.isEmpty()) {
+				for(int name : schoolList) { if(!visited[name]) { q.add(name); } }
+			}
 		}
-		
-		
-		ArrayList<String> reversepath = new ArrayList<String>();
-		reversepath.add(adjlists[finish].name);
-		for(int i=finish; i != start; i=previous.get(i)) { 
-			reversepath.add(adjlists[previous.get(i)].name); 
-		}
-	
 
-		visited[0] = true;
-		if(adjlists[0].school.equals(school)) {
-	//		subadjlists[0] = new Vertex(adjlists[0].name, adjlists[0].school, null);
-		}
-		q.add(0);
-		while(q.size() != 0) {
-			int w = q.remove();
-		}
-		
-		Graph g = new Graph();
-		g.adjlists = schooladjlists;
-		return g;
+		return subgraph;
 	}
-	*/
-	
 	
 	public void printSchools() {
 		for(Map.Entry entry : studentsInSchool.entrySet()) {

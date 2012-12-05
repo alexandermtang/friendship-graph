@@ -3,8 +3,10 @@
 
 package apps;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -66,7 +68,8 @@ public class Friends {
 			switch (option) {
 				case 's':
 					System.out.print("\t\tWhich school? => ");
-					String school = stdin.next().toLowerCase();
+					BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+					String school = in.readLine();
 					System.out.println(graph.subgraph(school));
 					break;
 				case 'i':
