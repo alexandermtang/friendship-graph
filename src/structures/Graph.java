@@ -84,20 +84,17 @@ public class Graph {
 			}
 		}
 		
-		if(curr != finish) return "\t\t\tLooks like "+name1+" is out of luck! :(";
-		
-		ArrayList<String> reversepath = new ArrayList<String>();
-		reversepath.add(nameOfIndex(finish));
-		for(int i=finish; i != start; i=previous.get(i)) { 
-			reversepath.add(nameOfIndex(previous.get(i))); 
+		if(curr != finish) {
+			return "\t\t\tLooks like "+name1+" is out of luck! :(\n\t\t\t"
+					+ name1 + " and " + name2 + " don't have enough mutual friends.";
 		}
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append("\t\t\tTry this route! \n\t\t\t");
-		for(int i=reversepath.size()-1; i >= 0; i--) {
-			sb.append(reversepath.get(i));
-			if(i != 0) sb.append(" --> ");
+		sb.append(nameOfIndex(finish));
+		for(int i=finish; i != start; i=previous.get(i)) { 
+			sb.insert(0, nameOfIndex(previous.get(i)) + " --> ");
 		}
+		sb.insert(0,"\t\t\tTry this route! \n\t\t\t");
 		return sb.toString();
 	}
 	
