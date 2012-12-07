@@ -1,10 +1,11 @@
-12
+13
 A|n
 B|n
 C|n
 D|n
 E|n
 F|n
+Q|n
 1|n
 2|n
 3|n
@@ -17,6 +18,8 @@ B|E
 C|D
 E|D
 D|F
+Q|B
+Q|C
 1|2
 2|3
 2|5
