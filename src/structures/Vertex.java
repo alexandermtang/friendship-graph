@@ -6,6 +6,11 @@ public class Vertex {
 	public String name;
 	public String school;
 	public LinkedList<Integer> neighbors;
+
+	public boolean visited = false;
+	public int dfsnum;
+	public int back;
+
 	public Vertex(String name, String school) {
 		this.name = name;
 		this.school = school;

@@ -39,10 +39,8 @@ public class Graph {
 	
 	public int vertexNumberOf(Vertex v) { return adjlists.indexOf(v); }
 	
-	public boolean containsEdge(int vnum, int nbr) {
-		return adjlists.get(vnum).neighbors.contains(nbr);
-	}
-	
+	public boolean containsEdge(int vnum, int nbr) { return adjlists.get(vnum).neighbors.contains(nbr); }
+ 
 	public void addEdge(int vnum, int nbr) {
 		Vertex v = adjlists.get(vnum);
 		if(!v.neighbors.contains(nbr)) {
@@ -99,6 +97,7 @@ public class Graph {
 	}
 	
 	public Graph subgraph(String school) { 
+		if(!studentsInSchool.containsKey(school)) return null;
 		LinkedList<Integer> schoolList = studentsInSchool.get(school);
 		Graph subgraph = new Graph(schoolList.size());
 		
@@ -132,7 +131,6 @@ public class Graph {
 				for(int name : schoolList) { if(!visited[name]) { q.add(name); } }
 			}
 		}
-
 		return subgraph;
 	}
 	
@@ -181,4 +179,53 @@ public class Graph {
 		}
 		return sb.toString();
 	}
+	
+	ArrayList<String> connectors = new ArrayList<String>();
+	int dfsnum = 0;
+	int startAt = 0;
+	
+	private void dfs(Vertex v) {
+		dfsnum++;
+		v.dfsnum = dfsnum;
+		v.back = dfsnum;
+		v.visited = true;
+		System.out.println(v.name +" "+ v.dfsnum +"/"+ v.back);
+
+		for(int wnum : v.neighbors) {
+			Vertex w = adjlists.get(wnum);
+			if(!w.visited) {
+				dfs(w);
+				if(indexOfName(v.name) != startAt && v.dfsnum <= w.back) {
+					System.out.println(v.name + " is a connector");
+					if(!connectors.contains(v.name)) connectors.add(v.name);
+				}
+				if(v.dfsnum > w.back) {
+					v.back = Math.min(v.back, w.back);
+					System.out.println(v.name +" "+ v.dfsnum +"/"+ v.back);
+				}
+			} else {
+				System.out.println(w.name+ " already visited");
+				v.back = Math.min(v.back, w.dfsnum);
+				System.out.println(v.name +" "+ v.dfsnum +"/"+ v.back);
+			}
+		}		
+	}
+	
+	public String connectors() {
+		for(int i = 0; i < adjlists.size(); i++) {
+			Vertex v = adjlists.get(i);
+			if(!v.visited && v.neighbors.size() == 1) {
+				// start new dfs, so set dfsnum=0, back=0 and startAt=current index
+				dfsnum = 0;
+				startAt = i;
+				dfs(v);
+			}
+		}
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append(connectors.get(0));
+		for(int i = 1; i < connectors.size(); i++) sb.insert(0, connectors.get(i)+", ");
+		sb.insert(0, "Connectors: ");
+		return sb.toString();
+	}	
 }

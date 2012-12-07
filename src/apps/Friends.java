@@ -1,5 +1,4 @@
-// Alexander Tang 
-// Brian Li
+// Alexander Tang, Brian Li
 
 package apps;
 
@@ -61,8 +60,8 @@ public class Friends {
 		System.out.print("Enter Friendship Graph file name => ");
 		String graphFile = stdin.next();
 		Graph graph = build(graphFile);
-		System.out.println(graph);
-		graph.printSchools();
+		//System.out.println(graph);
+		//graph.printSchools();
 		char option;
 		while((option = getOption()) != 'q') {
 			switch (option) {
@@ -82,13 +81,13 @@ public class Friends {
 				case 'c':
 					ArrayList<Graph> cliques = graph.cliques();
 					for(int i=0; i < cliques.size(); i++) {
-						System.out.println("Clique " + (i+1));
+						System.out.println("Clique " + (i+1) + ":");
 						System.out.println(cliques.get(i));
 					}
 					break;
 				case 'o':
-					break;
-				default: break;
+					System.out.println(graph.connectors());
+					break; 
 			}
 		}
 	}
